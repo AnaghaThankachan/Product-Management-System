@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Http\Request;
 use App\Models\productcategory;
 use App\Models\products;
@@ -12,8 +14,35 @@ class admin extends Controller
 {
     public function login()
     {
-        return view('admin.login');
+        $a="";
+        // die(Crypt::encrypt('fazz'));
+        return view('admin.login',['a'=>$a]);
     }
+
+    public function adminlogin(Request $req)
+    {
+        if(DB::table('admin')->where('username',$req->username)->exists())
+        {
+            $b=DB::table('admin')->where('username',$req->username)->first();
+            $c=Crypt::decrypt($b->password);
+            if($req->Password == $c)
+            {
+                Session::put('login',$b->id);
+                return redirect('add');
+            }
+            else
+            {
+                $a="Wrong Password";
+            }
+        }
+        else
+        {
+            $a="Wrong Username";
+        }
+        return redirect('login')->with('a',$a);
+    }
+
+
     public function change_password()
     {
         return view('admin.change_password');
@@ -168,5 +197,10 @@ class admin extends Controller
         return redirect('branch_list/');       
     }
 
+    public function logout()
+    {
+        Session::flush();
+        return redirect('login/');       
+    }
 
 }

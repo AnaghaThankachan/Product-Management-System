@@ -117,7 +117,7 @@
               <i class="right fas fa-angle-left"></i>
             </p>
           </a>
-          <a href="{% url 'login' %}" class="nav-link">
+          <a href="{{ url ('logout/') }}" class="nav-link">
             <i class="nav-icon fas fa-logout"></i>
             <p>
               Logout
